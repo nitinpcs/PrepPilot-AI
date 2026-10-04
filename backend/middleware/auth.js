@@ -11,7 +11,7 @@ export const protect = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET || 'super_secret_access_key_123!@#');
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 
     req.user = await User.findById(decoded.id).select('-password -otp -otpExpires -refreshTokenHash');
 

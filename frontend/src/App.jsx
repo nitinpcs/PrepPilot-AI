@@ -1,20 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { AuthProvider, useAuth } from '../contexts/AuthContext';
-import Navbar from '../components/Navbar';
-import LandingPage from '../pages/LandingPage';
-import AuthPage from '../pages/AuthPage';
-import DashboardPage from '../pages/DashboardPage';
-import InterviewPage from '../pages/InterviewPage';
-import CodingInterviewPage from '../pages/CodingInterviewPage';
-import FeedbackReportPage from '../pages/FeedbackReportPage';
-import ProfilePage from '../pages/ProfilePage';
-import ResetPasswordPage from '../pages/ResetPasswordPage';
-import NotFoundPage from '../pages/NotFoundPage';
-import ServerErrorPage from '../pages/ServerErrorPage';
-import UnauthorizedPage from '../pages/UnauthorizedPage';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Navbar from './components/Navbar';
+import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
+import DashboardPage from './pages/DashboardPage';
+import InterviewPage from './pages/InterviewPage';
+import CodingInterviewPage from './pages/CodingInterviewPage';
+import FeedbackReportPage from './pages/FeedbackReportPage';
+import ProfilePage from './pages/ProfilePage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import NotFoundPage from './pages/NotFoundPage';
+import ServerErrorPage from './pages/ServerErrorPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 import { Hexagon, AlertTriangle, X } from 'lucide-react';
-import Skeleton from '../components/Skeleton';
+import Skeleton from './components/Skeleton';
 
 // Branded loading screen component
 const AppLoadingScreen = ({ label = 'Initializing Copilot...' }) => {

@@ -49,8 +49,8 @@ EMAIL_FROM=noreply@interviewcopilot.ai
 
 # Groq API Key (required for domain-specific interview questions)
 GROQ_API_KEY=your_groq_key_here
-# Optional model override (default: llama-3.3-70b-versatile)
-# GROQ_MODEL=llama-3.3-70b-versatile
+# Optional model override (default: openai/gpt-oss-120b)
+# GROQ_MODEL=openai/gpt-oss-120b
 ```
 
 > OTP codes print to the backend terminal if SMTP is unconfigured.

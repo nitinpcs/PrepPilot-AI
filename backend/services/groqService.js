@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 const STRICT_RUBRIC = `
 STRICT EVALUATION POLICY (mandatory):
@@ -27,18 +27,48 @@ const getGroqClient = () => {
 
 const chatCompletion = async (messages, { json = false, temperature = 0.4 } = {}) => {
   const groq = getGroqClient();
-  const completion = await groq.chat.completions.create({
-    model: GROQ_MODEL,
-    messages,
-    temperature,
-    ...(json ? { response_format: { type: 'json_object' } } : {}),
-  });
+  const candidateModels = [
+    ...(process.env.GROQ_MODEL ? [process.env.GROQ_MODEL] : []),
+    'openai/gpt-oss-120b',
+    'openai/gpt-oss-20b',
+    'qwen/qwen3.8-27b',
+    'llama-3.3-70b-versatile',
+    'llama-3.1-8b-instant',
+  ];
 
-  const text = completion.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error('Empty response from Groq API');
+  const modelsToTry = [...new Set(candidateModels)];
+  let lastError = null;
+
+  for (const model of modelsToTry) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model,
+        messages,
+        temperature,
+        ...(json ? { response_format: { type: 'json_object' } } : {}),
+      });
+
+      const text = completion.choices?.[0]?.message?.content;
+      if (!text) {
+        throw new Error(`Empty response from Groq API using model ${model}`);
+      }
+      return text.trim();
+    } catch (error) {
+      const isModelNotFound =
+        error?.status === 404 ||
+        error?.code === 'model_not_found' ||
+        (error?.message && (error.message.includes('does not exist') || error.message.includes('model_not_found')));
+
+      if (isModelNotFound) {
+        console.warn(`Groq model "${model}" not found or inactive. Trying fallback model...`);
+        lastError = error;
+        continue;
+      }
+      throw error;
+    }
   }
-  return text.trim();
+
+  throw lastError || new Error('No active Groq models succeeded.');
 };
 
 const parseJsonResponse = (responseText) => {
